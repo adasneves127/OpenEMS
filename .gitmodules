@@ -1,0 +1,3 @@
+[submodule "SWD4CS"]
+	path = SWD4CS
+	url = git@github.com:hry2566/SWD4CS.git
