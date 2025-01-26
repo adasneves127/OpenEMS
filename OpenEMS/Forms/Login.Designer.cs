@@ -46,6 +46,7 @@
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(227, 23);
             txtUsername.TabIndex = 0;
+            txtUsername.KeyDown += txtUsername_KeyDown_1;
             // 
             // txtPassword
             // 
@@ -54,6 +55,7 @@
             txtPassword.Size = new Size(227, 23);
             txtPassword.TabIndex = 1;
             txtPassword.UseSystemPasswordChar = true;
+            txtPassword.KeyDown += txtUsername_KeyDown_1;
             // 
             // txtFQDN
             // 
@@ -61,6 +63,7 @@
             txtFQDN.Name = "txtFQDN";
             txtFQDN.Size = new Size(227, 23);
             txtFQDN.TabIndex = 2;
+            txtFQDN.KeyDown += txtUsername_KeyDown_1;
             // 
             // txtDBName
             // 
@@ -68,6 +71,7 @@
             txtDBName.Name = "txtDBName";
             txtDBName.Size = new Size(227, 23);
             txtDBName.TabIndex = 3;
+            txtDBName.KeyDown += txtUsername_KeyDown_1;
             // 
             // label1
             // 

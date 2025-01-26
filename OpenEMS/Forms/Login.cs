@@ -16,6 +16,17 @@ namespace OpenEMS
         public Login()
         {
             InitializeComponent();
+
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\OpenEMS"))
+            {
+                if (key != null)
+                {
+                    txtDBName.Text = (string)key.GetValue("db_name");
+                    txtFQDN.Text = (string)key.GetValue("db_host");
+                    txtUsername.Text = (string)key.GetValue("db_user");
+                    txtPassword.Focus();
+                }
+            }
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -38,19 +49,18 @@ namespace OpenEMS
 
         private void Login_Load(object sender, EventArgs e)
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\OpenEMS"))
-            {
-                if (key != null)
-                {
-                    txtDBName.Text = key.GetValue("db_name").ToString();
-                    txtFQDN.Text = (string)key.GetValue("db_host");
-                    txtUsername.Text = (string)key.GetValue("db_user");
-                    txtPassword.Focus();
-                }
-            }
+
         }
 
         private void txtUsername_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnLogin_Click(null, null);
+            }
+        }
+
+        private void txtUsername_KeyDown_1(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Enter)
             {

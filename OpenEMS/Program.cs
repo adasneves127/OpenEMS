@@ -45,7 +45,26 @@ static class Program
     {
         // To customize application configuration such as set high DPI settings or default font,
         // see https://aka.ms/applicationconfiguration.
+        loadPlugins();
+        
 
+        ApplicationConfiguration.Initialize();
+
+        Login login = new Login();
+        DialogResult result = login.ShowDialog();
+        if (result != DialogResult.OK) return;
+        Globals.username = login.txtUsername.Text;
+        Globals.password = login.txtPassword.Text;
+        Globals.db_host = login.txtFQDN.Text;
+        Globals.db_name = login.txtDBName.Text;
+        Globals.port = 3306;
+
+        // System.Console.WriteLine("Init");
+        Application.Run(new AppDesigner());
+    }    
+
+
+    public static void loadPlugins(){
         // Load Plugin files
         string[] pluginPaths  = Directory.GetFiles(@"C:\OpenEMS\Cache\OpenEMS\", "*.dll", SearchOption.AllDirectories);
         
@@ -62,19 +81,5 @@ static class Program
         foreach(ICommand command in Globals.plugins){
             Console.WriteLine($"{command.Name}\t - {command.Description}");
         }
-
-        ApplicationConfiguration.Initialize();
-
-        Login login = new Login();
-        DialogResult result = login.ShowDialog();
-        if (result != DialogResult.OK) return;
-        Globals.username = login.txtUsername.Text;
-        Globals.password = login.txtPassword.Text;
-        Globals.db_host = login.txtFQDN.Text;
-        Globals.db_name = login.txtDBName.Text;
-        Globals.port = 3306;
-
-        // System.Console.WriteLine("Init");
-        Application.Run(new AppDesigner());
-    }    
+    }
 }

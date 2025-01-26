@@ -4,6 +4,7 @@ using PluginBase;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.DirectoryServices;
+using OpenEMS.Forms;
 
 namespace OpenEMS;
 
@@ -13,9 +14,11 @@ public partial class AppDesigner : Form
     public AppDesigner()
     {
         InitializeComponent();
+        //saveFile("C:\\Users\\Alex Dasneves\\source\\repos\\OpenEMS\\Plugin2\\bin\\Debug\\net9.0-windows\\Plugin2.dll");
     }
 
-    private void populateGo(object sender, EventArgs e){
+    private void populateGo(object sender, EventArgs e)
+    {
         MySqlConnection conn = new MySqlConnection(Globals.connString);
         MySqlCommand cmd = conn.CreateCommand();
         conn.Open();
@@ -32,7 +35,8 @@ public partial class AppDesigner : Form
         conn.Close();
     }
 
-    private void populatePanelDefn(ToolStripMenuItem parentItem, int groupID){
+    private void populatePanelDefn(ToolStripMenuItem parentItem, int groupID)
+    {
         MySqlConnection conn = new MySqlConnection(Globals.connString);
         MySqlCommand cmd = conn.CreateCommand();
         conn.Open();
@@ -56,26 +60,31 @@ public partial class AppDesigner : Form
         ToolStripMenuItem? itm = sender as ToolStripMenuItem;
         if (itm == null || itm.Text == null) return;
         // Check if the plugin is loaded in the system.
-        foreach(ICommand cmd in Globals.plugins){
+        foreach (ICommand cmd in Globals.plugins)
+        {
             Console.WriteLine(cmd.Name);
         }
 
         ICommand? command = Globals.plugins.FirstOrDefault(c => c.Name == $"{itm.OwnerItem?.Text}/{itm.Text}");
-        if(command == null){
+        if (command == null)
+        {
             getFiles(itm.OwnerItem?.Text, itm.Text);
+            Program.loadPlugins();
             command = Globals.plugins.FirstOrDefault(c => c.Name == $"{itm.OwnerItem?.Text}/{itm.Text}");
-            if(command == null){
-             MessageBox.Show($"Error! Could not load program with name of {itm.OwnerItem?.Text}/{itm.Text}", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-             return;   
+            if (command == null)
+            {
+                MessageBox.Show($"Error! Could not load program with name of {itm.OwnerItem?.Text}/{itm.Text}", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-        
+
         }
         command.Execute();
 
     }
 
 
-    public static void saveFile(string filePath){
+    public static void saveFile(string filePath)
+    {
         FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
         int len = (int)fs.Length;
         byte[] data = new byte[len];
@@ -93,7 +102,8 @@ public partial class AppDesigner : Form
         cmd.ExecuteNonQuery();
     }
 
-    public static void getFiles(string? PanelGroup, string PanelName){
+    public static void getFiles(string? PanelGroup, string PanelName)
+    {
         MySqlConnection conn = new MySqlConnection(Globals.connString);
         conn.Open();
         MySqlCommand cmd = conn.CreateCommand();
@@ -101,21 +111,34 @@ public partial class AppDesigner : Form
         cmd.Parameters.AddWithValue("@panText", PanelName);
         cmd.Parameters.AddWithValue("@panGroupText", PanelGroup);
         MySqlDataReader reader = cmd.ExecuteReader();
-        while(reader.Read()){
+        while (reader.Read())
+        {
             string targetPath = Path.Join(@"C:\OpenEMS\cache\", @$"{Globals.db_name}\", reader.GetString("PROG_NAME"));
             // TODO: Check if file exists. If so, return.
-            if(Path.Exists(targetPath)) return;
+            if (Path.Exists(targetPath)) return;
 
             FileStream fs = File.Create(targetPath);
             string ProgB64 = reader.GetString("PROG_DATA");
             byte[] data = Convert.FromBase64String(ProgB64);
             fs.Write(data);
             fs.Close();
-            Assembly pluginAssembly = Program.LoadPlugin(targetPath);
-            IEnumerable<ICommand> commands = Program.CreateCommands(pluginAssembly);
-            Globals.plugins.Concat(commands);
-            
         }
 
+    }
+
+    private void newToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        // We should find if the object to be created is one of the following:
+        // - Plugin (Project)
+        // - Record (Column in database)
+        // - Table (Real or "Virtual" [View])
+        // - Panel (Form)
+
+        // Open a dialog form that gets the following info:
+        // - Object Type
+        // - Object Name
+
+        NewItem itm = new();
+        DialogResult res = itm.ShowDialog();
     }
 }
