@@ -7,11 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OpenEMS.Enums;
 
 namespace OpenEMS.Forms
 {
     public partial class NewItem : Form
     {
+        public FileType FileType;
+        public string fileName { get => txt_itemName.Text; }
         public NewItem()
         {
             InitializeComponent();
@@ -35,6 +38,21 @@ namespace OpenEMS.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+            switch (listView1.SelectedItems[0].Text)
+            {
+                case "SQL Table":
+                    this.FileType = FileType.SqlTbl;
+                    break;
+                case "SQL Column":
+                    this.FileType = FileType.SqlCol;
+                    break;
+                case "C# Plugin":
+                    this.FileType = FileType.CsProj;
+                    break;
+                case "C# File":
+                    this.FileType = FileType.CsFile;
+                    break;
+            }
             this.Close();
         }
     }

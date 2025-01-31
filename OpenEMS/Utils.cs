@@ -12,11 +12,5 @@ namespace OpenEMS
             return "";
         }
 
-        public static void putFile(string progPath){
-            
-            System.Console.WriteLine(Globals.connString);
-            DBConnection conn = new DBConnection(Globals.connString);
-            AppDesigner.saveFile(@"C:\Users\Alex Dasneves\source\repos\OpenEMS\OpenEMS\bin\Debug\net9.0-windows\OpenEMS.dll");
-        }
     }
 }
